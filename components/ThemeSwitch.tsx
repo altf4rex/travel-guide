@@ -25,7 +25,7 @@ export default function ThemeSwitch() {
   if (resolvedTheme === 'dark') {
     return (
       <button 
-          className="p-3 rounded-lg bg-secondaryBackground hover:bg-secondaryBackgroundHover"
+          className="p-3 ml-3 rounded-lg bg-secondaryBackground hover:bg-secondaryBackgroundHover"
           type="button"
           onClick={() => setTheme('light')}
       >
@@ -37,7 +37,7 @@ export default function ThemeSwitch() {
   if (resolvedTheme === 'light') {
     return (
       <button 
-          className="p-3 rounded-lg bg-secondaryBackground hover:bg-secondaryBackgroundHover"
+          className="p-3 ml-3 rounded-lg bg-secondaryBackground hover:bg-secondaryBackgroundHover"
           type="button"
           onClick={() => setTheme('dark')}
       >
