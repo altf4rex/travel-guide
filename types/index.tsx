@@ -4,3 +4,11 @@ export type DestinationsCartProps = {
     id: number;
     link: string;
 }
+
+export type CityProps = {
+    name: string; 
+    img: string; 
+    overview: string; 
+    attractions: string[];
+    routes: string
+}  

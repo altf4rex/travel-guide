@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200..1000&display=swap');
 
+:root{
+  --font-family-main: "Nunito", sans-serif; 
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,10 +13,42 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scrollbar-width: auto;
+  scrollbar-color: #434243;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #272727;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #434243;
+  border-radius: 18px;
+}
+
+::selection {
+  background: #434243; 
+  color: #B2B2B1;
+}
+::-moz-selection {
+  background: #434243; 
+  color: #B2B2B1;
+}
+::-webkit-selection {
+  background: #434243; 
+  color: #B2B2B1;
+}
+
+html{
+  scroll-behavior: smooth;
 }
 
 body {
-    font-family: "Nunito", sans-serif;
+    font-family: var(--font-family-main);
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
@@ -25,7 +61,7 @@ textarea:focus, input:focus{
 
 .container{
   max-width: 928px;
-  margin: 0 auto;
+  margin: 36px auto;
   width: 100%;
 }
 
@@ -36,31 +72,11 @@ textarea:focus, input:focus{
   font-style: normal;
 }
 
-/* svg{
-  position: relative;
-  z-index: 0;
+.Flipped
+{
+    direction: rtl;
 }
-
-
-
-path:hover {
-  fill: #f00;
-  transform: scale(1.1);
-  z-index: 10;
-} */
-
-path {
-  position: relative;
-  z-index: 0;
-  transform: scale(1);
-  transition: transform 0.3s;
-  transform-origin: center center;
-  
-}
-
-path:hover {
-  transform: scale(1.1); /* Увеличение при наведении */
-  cursor: pointer; /* Изменение курсора */
-  position: relative; /* Устанавливаем позиционирование */
-  z-index: 1; /* Делаем элемент поверх остальных */
+.Content
+{
+    direction: ltr;
 }
