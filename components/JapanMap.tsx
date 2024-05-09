@@ -1,5 +1,25 @@
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
 
-export default function JapanMap({ id }: { id: number }) {
+export default function JapanMap({ id, pathLength }: { id: number, pathLength: number }) {
+    const pathRef = useRef(null);  // Reference to the SVG path element
+
+    useEffect(() => {
+        // Set the initial state of the path to be fully hidden
+        const totalLength = pathRef.current.getTotalLength(); // Get the total length of the path
+        gsap.set(pathRef.current, {
+            strokeDasharray: totalLength,
+            strokeDashoffset: totalLength
+        });
+
+        // Animate the strokeDashoffset to reveal the path according to pathLength
+        gsap.to(pathRef.current, {
+            strokeDashoffset: totalLength * (1 - pathLength / 100),
+            duration: 1,  // Duration of the animation in seconds
+            ease: "none"
+        });
+    }, [pathLength]);
+
     return (
         <div className="relative">
             <svg width="1587" height="1024" viewBox="0 0 1587 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -264,7 +284,7 @@ export default function JapanMap({ id }: { id: number }) {
 
 <svg className="absolute bottom-28 right-40" width="791" height="486" viewBox="0 0 791 486" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g filter="url(#filter0_d_50_1203)">
-<path className="red-road" d="M738.5 56.0977L691.5 99.0977L589 146.098L521 101.598L483.5 185.598L311 232.598L194.5 242.098L45.5 214.598L9.5 282.598L60.5 475.598" stroke="#D7092E"  stroke-width="2"/> 
+<path ref={pathRef} className="red-road" d="M738.5 56.0977L691.5 99.0977L589 146.098L521 101.598L483.5 185.598L311 232.598L194.5 242.098L45.5 214.598L9.5 282.598L60.5 475.598" stroke="#D7092E"  stroke-width="2"/> 
 <circle cx="60" cy="472" r="6" fill="#D7092E"/>
 <circle cx="31" cy="364" r="6" fill="#D7092E"/>
 <circle cx="10" cy="283" r="6" fill="#D7092E"/>

@@ -2,23 +2,21 @@
 "use client"
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { destinations } from "@/constants";
 import { DestinationsCartProps } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import JapanMap from "./JapanMap";
+import { useGSAP } from "@gsap/react";
 
-function RoadMap({ id }: { id: number }) {
+function RoadMap({ id, pathLength }: { id: number, pathLength: number }) {
     return (
         <div className="absolute top-0 right-0">
-            <JapanMap id={id}/>
+            <JapanMap id={id} pathLength={pathLength}/>
         </div>
     );
 }
-
-
 
 export default function Carousel() {
     gsap.registerPlugin(ScrollTrigger);
@@ -27,53 +25,66 @@ export default function Carousel() {
     const containerCards = useRef(null);
     const [id, setId] = useState(0);
 
+    const [totalPathLength, setTotalPathLength] = useState(0);  // Total path length
+    const [visiblePathLength, setVisiblePathLength] = useState(0);  // Visible path length
+
     useGSAP(() => {
         const cards = gsap.utils.toArray(containerCards.current.children);
         const container = containerRef.current;
+        const redRoadElement = document.querySelector(".red-road");
+
+            
+                const length = redRoadElement.getTotalLength();
+                setTotalPathLength(length);
+                setVisiblePathLength(length);
+            
+
 
         cards.forEach((card, index) => {
-            const tl = gsap.timeline({
+            gsap.timeline({
                 scrollTrigger: {
                     trigger: card,
                     scroller: container,
-                    start: "top center+=100", // Adjust 100px to fine-tune when the animation starts
-                    end: "bottom center-=100", // Adjust 100px to fine-tune when the animation ends
-                    scrub: 1.5, // Smooth out the transition, 1.5 seconds of lag
+                    start: "top center+=100",
+                    end: "bottom center-=100",
+                    scrub: 1.5,
                     markers: true,
-                    onEnter: () => setId(destinations[index].id),
-                    onLeaveBack: () => setId(destinations[index].id)
+                    onEnter: () => {
+                        setId(index);
+                        setVisiblePathLength(totalPathLength * ((index + 1) / cards.length));
+                    },
+                    onLeaveBack: () => {
+                        setId(index);
+                        setVisiblePathLength(totalPathLength * (index / cards.length));
+                    }
                 }
-            });
-
-            tl.to(card, { scale: 1.2, ease: "none" })
+            }).to(card, { scale: 1.2, ease: "none" })
               .to(card, { scale: 1, ease: "none" });
         });
-    }, [containerRef, containerCards]);
+    }, [containerRef, containerCards, totalPathLength]); // Include pathLength as a dependency
 
-  return (
-      <>
-          <div className="overlay"></div>
-          <div className="Flipped carousel relative z-50 flex flex-col w-fit max-h-[423px] overflow-y-scroll overflow-x-auto" ref={containerRef}>
-            <div className="wrapper" ref={containerCards}>
-              {
-                  destinations.map((d:DestinationsCartProps, i:number) => (
-                      <Link href={d.link} key={d.id} className={`Content slide ml-20 pt-10 flex items-center ${i === 0 ? 'mt-40' : ''} ${i === destinations.length - 1 ? 'mb-40' : ''}`}>
-                          <Image 
-                              className="rounded-3xl"
-                              src={d.img}
-                              alt={d.name}
-                              width={277}
-                              height={155}
-                          />
-                          <p className="title text-base font-bold text-primaryLight">{d.name}</p>
-                      </Link>
-                  ))
-              }
+    return (
+        <>
+            <div className="overlay"></div>
+            <div className="Flipped carousel relative z-50 flex flex-col w-fit max-h-[423px] overflow-y-scroll overflow-x-auto" ref={containerRef}>
+              <div className="wrapper" ref={containerCards}>
+                {destinations.map((d: DestinationsCartProps, i: number) => (
+                    <Link href={d.link} key={d.id} className={`Content slide ml-20 pt-10 flex items-center ${i === 0 ? 'mt-40' : ''} ${i === destinations.length - 1 ? 'mb-40' : ''}`}>
+                        <Image 
+                            className="rounded-3xl"
+                            src={d.img}
+                            alt={d.name}
+                            width={277}
+                            height={155}
+                        />
+                        <p className="title text-base font-bold text-primaryLight">{d.name}</p>
+                    </Link>
+                ))}
               </div>
-          </div>
-          <RoadMap id={id}/>
-      </>
-  );
+            </div>
+            <RoadMap id={id} pathLength={visiblePathLength} />
+        </>
+    );
 }
 
 
